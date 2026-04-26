@@ -1,0 +1,10 @@
+com\sgs\docenti\dto\DocenteDTO$DocenteDTOBuilder.class
+com\sgs\docenti\DocentiServiceApplication.class
+com\sgs\docenti\model\Docente.class
+com\sgs\docenti\repository\DocenteRepository.class
+com\sgs\docenti\exception\GlobalExceptionHandler.class
+com\sgs\docenti\dto\DocenteDTO.class
+com\sgs\docenti\model\Docente$DocenteBuilder.class
+com\sgs\docenti\service\DocenteService.class
+com\sgs\docenti\exception\DocenteNotFoundException.class
+com\sgs\docenti\controller\DocenteController.class

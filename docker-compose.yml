@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  # ── Database ────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: sgs-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sgs
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - sgs_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sgs_user -d sgs"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Docenti Service ─────────────────────────────────────────
+  docenti-service:
+    build: ./docenti-service
+    container_name: sgs-docenti
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sgs
+      SPRING_DATASOURCE_USERNAME: sgs_user
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── Studenti Service ─────────────────────────────────────────
+  studenti-service:
+    build: ./studenti-service
+    container_name: sgs-studenti
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sgs
+      SPRING_DATASOURCE_USERNAME: sgs_user
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  sgs_pgdata:

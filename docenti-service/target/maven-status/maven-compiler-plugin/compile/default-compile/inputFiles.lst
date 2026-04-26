@@ -1,0 +1,8 @@
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\controller\DocenteController.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\DocentiServiceApplication.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\dto\DocenteDTO.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\exception\DocenteNotFoundException.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\exception\GlobalExceptionHandler.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\model\Docente.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\repository\DocenteRepository.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\docenti-service\src\main\java\com\sgs\docenti\service\DocenteService.java
