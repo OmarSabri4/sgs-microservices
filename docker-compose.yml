@@ -23,7 +23,7 @@ services:
 
   # ── Docenti Service ─────────────────────────────────────────
   docenti-service:
-    image: ./docenti-service
+    build: ./docenti-service
     container_name: sgs-docenti
     ports:
       - "8081:8081"
@@ -37,7 +37,7 @@ services:
 
   # ── Studenti Service ─────────────────────────────────────────
   studenti-service:
-    image: ./studenti-service
+    build: ./studenti-service
     container_name: sgs-studenti
     ports:
       - "8082:8082"

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "\"Docenti\"", schema = "sgs_core")
+@Table(name = "Docenti", schema = "sgs_core")
 @Data
 @Builder
 @NoArgsConstructor

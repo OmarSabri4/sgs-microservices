@@ -13,22 +13,22 @@ GRANT ALL ON SCHEMA sgs_core TO sgs_user;
 
 -- ── Tabelle ──────────────────────────────────────────────────
 
-CREATE TABLE sgs_core."classi" (
+CREATE TABLE sgs_core."Classi" (
     id_classe      SERIAL PRIMARY KEY,
     codice_classe  VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE sgs_core."materie" (
+CREATE TABLE sgs_core."Materie" (
     id_materia  SERIAL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE sgs_core."ruoli" (
+CREATE TABLE sgs_core."Ruoli" (
     id_ruolo  SERIAL PRIMARY KEY,
     nome      VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE sgs_core."docenti" (
+CREATE TABLE sgs_core."Docenti" (
     id_docente          SERIAL PRIMARY KEY,
     codice_docente      VARCHAR(20)  NOT NULL UNIQUE,
     nome                VARCHAR(50)  NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE sgs_core."docenti" (
     stato               VARCHAR(20)
 );
 
-CREATE TABLE sgs_core."studenti" (
+CREATE TABLE sgs_core."Studenti" (
     id_studente         SERIAL PRIMARY KEY,
     codice_studente     VARCHAR(20)  NOT NULL UNIQUE,
     nome                VARCHAR(50)  NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE sgs_core."studenti" (
     attivo              BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE sgs_core."utenti" (
+CREATE TABLE sgs_core."Utenti" (
     id_utente      SERIAL PRIMARY KEY,
     username       VARCHAR(50)  NOT NULL UNIQUE,
     password_hash  VARCHAR(255) NOT NULL,
@@ -64,25 +64,25 @@ CREATE TABLE sgs_core."utenti" (
     attivo         BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE sgs_core."utente_Ruolo" (
+CREATE TABLE sgs_core."Utente_Ruolo" (
     id_utente  INTEGER REFERENCES sgs_core."Utenti"(id_utente),
     id_ruolo   INTEGER REFERENCES sgs_core."Ruoli"(id_ruolo),
     PRIMARY KEY (id_utente, id_ruolo)
 );
 
-CREATE TABLE sgs_core."docente_Classe" (
+CREATE TABLE sgs_core."Docente_Classe" (
     id_docente  INTEGER REFERENCES sgs_core."Docenti"(id_docente),
     id_classe   INTEGER REFERENCES sgs_core."Classi"(id_classe),
     PRIMARY KEY (id_docente, id_classe)
 );
 
-CREATE TABLE sgs_core."docente_Materia" (
+CREATE TABLE sgs_core."Docente_Materia" (
     id_docente  INTEGER REFERENCES sgs_core."Docenti"(id_docente),
     id_materia  INTEGER REFERENCES sgs_core."Materie"(id_materia),
     PRIMARY KEY (id_docente, id_materia)
 );
 
-CREATE TABLE sgs_core."audit" (
+CREATE TABLE sgs_core."Audit" (
     id_audit          SERIAL PRIMARY KEY,
     tabella           VARCHAR(50),
     id_record         INTEGER,
@@ -97,11 +97,11 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA sgs_core TO sgs_user;
 
 -- ── Dati ─────────────────────────────────────────────────────
 
-INSERT INTO sgs_core."classi" (codice_classe) VALUES ('3A'), ('4B'), ('5C');
+INSERT INTO sgs_core."Classi" (codice_classe) VALUES ('3A'), ('4B'), ('5C');
 
-INSERT INTO sgs_core."materie" (nome) VALUES ('Informatica'), ('Matematica'), ('Italiano'), ('Storia');
+INSERT INTO sgs_core."Materie" (nome) VALUES ('Informatica'), ('Matematica'), ('Italiano'), ('Storia');
 
-INSERT INTO sgs_core."ruoli" (nome) VALUES ('amministratore'), ('segreteria'), ('coordinatore'), ('docente'), ('studente');
+INSERT INTO sgs_core."Ruoli" (nome) VALUES ('amministratore'), ('segreteria'), ('coordinatore'), ('docente'), ('studente');
 
 INSERT INTO sgs_core."Docenti" (codice_docente, nome, cognome, codice_fiscale, email_istituzionale, telefono, data_assunzione, stato) VALUES
 ('DOC-042', 'Marco',    'Orsetto',   'RSSTMR75C12H501X', 'm.orsetto@scuola.it',   '+39 02 1234567', '2018-09-01', 'attivo'),
@@ -115,7 +115,7 @@ INSERT INTO sgs_core."Docenti" (codice_docente, nome, cognome, codice_fiscale, e
 ('DOC-011', 'Davide',   'Fontana',   'FNTDVD77C14F205R', 'd.fontana@scuola.it',   '+39 02 9012345', '2014-09-01', 'attivo'),
 ('DOC-047', 'Elena',    'Gallo',     'GLLLNE80D58H501Y', 'e.gallo@scuola.it',     '+39 02 0123456', '2016-09-01', 'attivo');
 
-INSERT INTO sgs_core."studenti" (codice_studente, nome, cognome, codice_fiscale, data_nascita, indirizzo, id_classe, email_scuola, email_personale, telefono, telefono_emergenza, attivo) VALUES
+INSERT INTO sgs_core."Studenti" (codice_studente, nome, cognome, codice_fiscale, data_nascita, indirizzo, id_classe, email_scuola, email_personale, telefono, telefono_emergenza, attivo) VALUES
 ('STU-001', 'Alice',     'Moretti',   'MRTAL08A41H501B', '2008-01-15', 'Via Roma 12, Milano',             1, 'a.moretti@studenti.scuola.it',  'alice.moretti@gmail.com',   '+39 333 1111111', '+39 02 1111111', TRUE),
 ('STU-002', 'Filippo',   'Greco',     'GRCFLP07E14F205C','2007-05-14', 'Via Verdi 3, Milano',             1, 'f.greco@studenti.scuola.it',    'filippo.greco@gmail.com',   '+39 333 2222222', '+39 02 2222222', TRUE),
 ('STU-003', 'Valentina', 'Russo',     'RSSVLN08C41L219D','2008-03-21', 'Corso Buenos Aires 5, Milano',    1, 'v.russo@studenti.scuola.it',    'vale.russo@gmail.com',      '+39 333 3333333', '+39 02 3333333', TRUE),
@@ -127,8 +127,8 @@ INSERT INTO sgs_core."studenti" (codice_studente, nome, cognome, codice_fiscale,
 ('STU-009', 'Giorgia',   'De Santis', 'DSNGRG08A41A944L','2008-01-28', 'Via Brera 9, Milano',             3, 'g.desantis@studenti.scuola.it', 'giorgia.ds@gmail.com',      '+39 333 9999999', '+39 02 9999999', TRUE),
 ('STU-010', 'Andrea',    'Lombardo',  'LMBNDR07G20H501M','2007-07-20', 'Via Solferino 16, Milano',        3, 'a.lombardo@studenti.scuola.it', 'andrea.lombardo@gmail.com', '+39 333 0000001', '+39 02 0000001', TRUE);
 
-INSERT INTO sgs_core."docente_Classe" (id_docente, id_classe) VALUES
+INSERT INTO sgs_core."Docente_Classe" (id_docente, id_classe) VALUES
 (1,1),(1,2),(2,1),(3,2),(4,3),(5,1),(5,3),(6,2),(7,3),(8,1),(9,2),(10,3);
 
-INSERT INTO sgs_core."docente_Materia" (id_docente, id_materia) VALUES
+INSERT INTO sgs_core."Docente_Materia" (id_docente, id_materia) VALUES
 (1,1),(1,2),(2,3),(3,4),(4,1),(5,2),(6,3),(7,4),(8,1),(9,2),(10,3);

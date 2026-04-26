@@ -1,0 +1,11 @@
+com\sgs\studenti\model\Studente$StudenteBuilder.class
+com\sgs\studenti\service\StudenteService.class
+com\sgs\studenti\dto\StudenteDTO.class
+com\sgs\studenti\dto\StudenteDTO$StudenteDTOBuilder.class
+com\sgs\studenti\exception\StudenteNotFoundException.class
+com\sgs\studenti\model\Studente.class
+com\sgs\studenti\controller\StudenteController.class
+com\sgs\studenti\StudentiServiceApplication.class
+com\sgs\studenti\exception\GlobalExceptionHandler.class
+com\sgs\studenti\repository\StudenteRepository.class
+com\sgs\studenti\SwaggerConfig.class

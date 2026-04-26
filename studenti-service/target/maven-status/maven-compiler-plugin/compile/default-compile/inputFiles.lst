@@ -1,0 +1,9 @@
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\controller\StudenteController.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\dto\StudenteDTO.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\exception\GlobalExceptionHandler.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\exception\StudenteNotFoundException.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\model\Studente.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\repository\StudenteRepository.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\service\StudenteService.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\StudentiServiceApplication.java
+C:\Users\omars\OneDrive\Documents\sgs_microservices\sgs-completo\studenti-service\src\main\java\com\sgs\studenti\SwaggerConfig.java
