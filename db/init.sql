@@ -5,7 +5,7 @@
 
 CREATE USER sgs_user WITH PASSWORD 'postgres';
 
-CREATE DATABASE sgs;
+CREATE DATABASE IF NOT EXISTS sgs;
 \connect sgs;
 
 CREATE SCHEMA IF NOT EXISTS sgs_core;
@@ -13,22 +13,22 @@ GRANT ALL ON SCHEMA sgs_core TO sgs_user;
 
 -- ── Tabelle ──────────────────────────────────────────────────
 
-CREATE TABLE sgs_core."Classi" (
+CREATE TABLE IF NOT EXISTS sgs_core."Classi" (
     id_classe      SERIAL PRIMARY KEY,
     codice_classe  VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE sgs_core."Materie" (
+CREATE TABLE IF NOT EXISTS sgs_core."Materie" (
     id_materia  SERIAL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE sgs_core."Ruoli" (
+CREATE TABLE IF NOT EXISTS sgs_core."Ruoli" (
     id_ruolo  SERIAL PRIMARY KEY,
     nome      VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE sgs_core."Docenti" (
+CREATE TABLE IF NOT EXISTS sgs_core."Docenti" (
     id_docente          SERIAL PRIMARY KEY,
     codice_docente      VARCHAR(20)  NOT NULL UNIQUE,
     nome                VARCHAR(50)  NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE sgs_core."Docenti" (
     stato               VARCHAR(20)
 );
 
-CREATE TABLE sgs_core."Studenti" (
+CREATE TABLE IF NOT EXISTS sgs_core."Studenti" (
     id_studente         SERIAL PRIMARY KEY,
     codice_studente     VARCHAR(20)  NOT NULL UNIQUE,
     nome                VARCHAR(50)  NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE sgs_core."Studenti" (
     attivo              BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE sgs_core."Utenti" (
+CREATE TABLE IF NOT EXISTS sgs_core."Utenti" (
     id_utente      SERIAL PRIMARY KEY,
     username       VARCHAR(50)  NOT NULL UNIQUE,
     password_hash  VARCHAR(255) NOT NULL,
@@ -64,25 +64,25 @@ CREATE TABLE sgs_core."Utenti" (
     attivo         BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE sgs_core."Utente_Ruolo" (
+CREATE TABLE IF NOT EXISTS sgs_core."Utente_Ruolo" (
     id_utente  INTEGER REFERENCES sgs_core."Utenti"(id_utente),
     id_ruolo   INTEGER REFERENCES sgs_core."Ruoli"(id_ruolo),
     PRIMARY KEY (id_utente, id_ruolo)
 );
 
-CREATE TABLE sgs_core."Docente_Classe" (
+CREATE TABLE IF NOT EXISTS sgs_core."Docente_Classe" (
     id_docente  INTEGER REFERENCES sgs_core."Docenti"(id_docente),
     id_classe   INTEGER REFERENCES sgs_core."Classi"(id_classe),
     PRIMARY KEY (id_docente, id_classe)
 );
 
-CREATE TABLE sgs_core."Docente_Materia" (
+CREATE TABLE IF NOT EXISTS sgs_core."Docente_Materia" (
     id_docente  INTEGER REFERENCES sgs_core."Docenti"(id_docente),
     id_materia  INTEGER REFERENCES sgs_core."Materie"(id_materia),
     PRIMARY KEY (id_docente, id_materia)
 );
 
-CREATE TABLE sgs_core."Audit" (
+CREATE TABLE IF NOT EXISTS sgs_core."Audit" (
     id_audit          SERIAL PRIMARY KEY,
     tabella           VARCHAR(50),
     id_record         INTEGER,
