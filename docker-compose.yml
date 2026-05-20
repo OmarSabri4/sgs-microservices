@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   # ── Database ────────────────────────────────────────────────
@@ -48,6 +46,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  # ── API Gateway ──────────────────────────────────────────────
+  gateway-service:
+    build: ./gateway-service
+    container_name: sgs-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - docenti-service
+      - studenti-service
 
 volumes:
   sgs_pgdata:

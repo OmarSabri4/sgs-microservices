@@ -1,15 +1,20 @@
 # SGS - Sistema Gestione Scolastica
 
-Progetto composto da due microservizi Spring Boot + PostgreSQL, orchestrati con Docker Compose.
+Progetto a microservizi Spring Boot + PostgreSQL con API Gateway, orchestrato con Docker Compose.
 
 ## Versioni
+
 - **v1.0.0** — CRUD base Docenti e Studenti
 - **v1.1.0** — Aggiunta documentazione interattiva OpenAPI/Swagger
+- **v1.2.0** — API Gateway con Spring Cloud Gateway + Circuit Breaker (Resilience4j)
 
 ---
 
 ## Stack tecnologico
+
 - **Java 21** + **Spring Boot 3.5.14**
+- **Spring Cloud Gateway 2025.0.0** (API Gateway)
+- **Resilience4j** (Circuit Breaker)
 - **Spring Data JPA** + **Hibernate**
 - **PostgreSQL 16**
 - **SpringDoc OpenAPI 2.8.8** (Swagger UI)
@@ -18,18 +23,48 @@ Progetto composto da due microservizi Spring Boot + PostgreSQL, orchestrati con 
 
 ---
 
+## Architettura
+
+```
+                        ┌─────────────────────────────────┐
+                        │         API Gateway              │
+         Client ───────▶│      localhost:8080              │
+                        │  (Spring Cloud Gateway)          │
+                        └────────────┬────────────────┬────┘
+                                     │                │
+                          /api/docenti/**    /api/studenti/**
+                                     │                │
+                        ┌────────────▼──┐  ┌──────────▼────┐
+                        │   docenti-    │  │   studenti-   │
+                        │   service     │  │   service     │
+                        │  porta 8081   │  │  porta 8082   │
+                        └──────┬────────┘  └──────┬────────┘
+                               │                  │
+                        ┌──────▼──────────────────▼────┐
+                        │        PostgreSQL 16          │
+                        │         porta 5433            │
+                        │       schema: sgs_core        │
+                        └──────────────────────────────┘
+```
+
+---
+
 ## Struttura del progetto
 
 ```
-sgs/
+sgs-microservices/
 ├── docker-compose.yml
 ├── db/
-│   └── init.sql              ← schema + dati, eseguito automaticamente al primo avvio
-├── docenti-service/
+│   └── init.sql                  ← schema + dati seed
+├── gateway-service/              ← API Gateway (porta 8080)
 │   ├── Dockerfile
 │   ├── pom.xml
 │   └── src/
-└── studenti-service/
+├── docenti-service/              ← Microservizio Docenti (porta 8081)
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/
+└── studenti-service/             ← Microservizio Studenti (porta 8082)
     ├── Dockerfile
     ├── pom.xml
     └── src/
@@ -40,63 +75,61 @@ sgs/
 ## Avvio rapido
 
 ### Prerequisiti
+
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [Git](https://git-scm.com)
 
 ### Avvio
+
 ```bash
-git clone https://github.com/tuousername/sgs-microservices.git
+git clone https://github.com/OmarSabri4/sgs-microservices.git
 cd sgs-microservices
-docker-compose up
+docker compose up --build
 ```
 
 Al primo avvio il DB viene inizializzato automaticamente con schema e dati tramite `init.sql`.
 I microservizi aspettano che il DB sia pronto prima di avviarsi (healthcheck).
 
+> ⚠️ Per un reset completo (cancella anche i dati): `docker compose down -v`
+
 ---
 
 ## Servizi disponibili
 
-| Servizio | Porta | URL base |
+| Servizio | Porta diretta | Tramite Gateway |
 |---|---|---|
-| Docenti | 8081 | http://localhost:8081/api/docenti |
-| Studenti | 8082 | http://localhost:8082/api/studenti |
-| PostgreSQL | 5433 | localhost:5433 |
+| API Gateway | `localhost:8080` | — |
+| Docenti | `localhost:8081` | `localhost:8080/api/docenti` |
+| Studenti | `localhost:8082` | `localhost:8080/api/studenti` |
+| PostgreSQL | `localhost:5433` | — |
+
+> In produzione si usa **solo la porta 8080** del gateway. Le porte 8081/8082 sono esposte per sviluppo locale.
 
 ---
 
 ## Documentazione API (Swagger UI)
 
-Ogni microservizio espone una documentazione interattiva degli endpoint tramite **OpenAPI 3**.
-
-| Servizio | Swagger UI | API Docs (JSON) |
-|---|---|---|
-| Docenti | http://localhost:8081/swagger-ui.html | http://localhost:8081/api-docs |
-| Studenti | http://localhost:8082/swagger-ui.html | http://localhost:8082/api-docs |
-
-### Come usare Swagger UI
-1. Avvia i servizi con `docker-compose up`
-2. Apri il browser e vai su `http://localhost:8081/swagger-ui.html`
-3. Espandi un endpoint cliccandoci sopra
-4. Clicca **"Try it out"**
-5. Inserisci i parametri richiesti
-6. Clicca **"Execute"** per vedere la risposta in tempo reale
+| Servizio | URL diretto |
+|---|---|
+| Docenti | http://localhost:8081/swagger-ui.html |
+| Studenti | http://localhost:8082/swagger-ui.html |
 
 ---
 
-## Endpoint Docenti (porta 8081)
+## Endpoint Docenti
 
 | Metodo | URL | Descrizione |
 |---|---|---|
-| GET | /api/docenti | Lista tutti i docenti |
-| GET | /api/docenti/{id} | Singolo docente per ID |
-| GET | /api/docenti?stato=attivo | Filtra per stato |
-| GET | /api/docenti?cognome=rossi | Filtra per cognome |
-| POST | /api/docenti | Crea nuovo docente |
-| PUT | /api/docenti/{id} | Aggiorna docente |
-| DELETE | /api/docenti/{id} | Elimina docente |
+| GET | `/api/docenti` | Lista tutti i docenti |
+| GET | `/api/docenti/{id}` | Singolo docente per ID |
+| GET | `/api/docenti?stato=attivo` | Filtra per stato |
+| GET | `/api/docenti?cognome=rossi` | Filtra per cognome (parziale) |
+| POST | `/api/docenti` | Crea nuovo docente |
+| PUT | `/api/docenti/{id}` | Aggiorna docente |
+| DELETE | `/api/docenti/{id}` | Elimina docente |
 
 ### Esempio POST /api/docenti
+
 ```json
 {
   "codiceDocente": "DOC-099",
@@ -112,20 +145,21 @@ Ogni microservizio espone una documentazione interattiva degli endpoint tramite 
 
 ---
 
-## Endpoint Studenti (porta 8082)
+## Endpoint Studenti
 
 | Metodo | URL | Descrizione |
 |---|---|---|
-| GET | /api/studenti | Lista tutti gli studenti |
-| GET | /api/studenti/{id} | Singolo studente per ID |
-| GET | /api/studenti?idClasse=1 | Filtra per classe |
-| GET | /api/studenti?attivo=true | Filtra per stato |
-| GET | /api/studenti?cognome=rossi | Filtra per cognome |
-| POST | /api/studenti | Crea nuovo studente |
-| PUT | /api/studenti/{id} | Aggiorna studente |
-| DELETE | /api/studenti/{id} | Elimina studente |
+| GET | `/api/studenti` | Lista tutti gli studenti |
+| GET | `/api/studenti/{id}` | Singolo studente per ID |
+| GET | `/api/studenti?idClasse=1` | Filtra per classe |
+| GET | `/api/studenti?attivo=true` | Filtra per stato |
+| GET | `/api/studenti?cognome=rossi` | Filtra per cognome (parziale) |
+| POST | `/api/studenti` | Crea nuovo studente |
+| PUT | `/api/studenti/{id}` | Aggiorna studente |
+| DELETE | `/api/studenti/{id}` | Elimina studente |
 
 ### Esempio POST /api/studenti
+
 ```json
 {
   "codiceStudente": "STU-011",
@@ -145,66 +179,70 @@ Ogni microservizio espone una documentazione interattiva degli endpoint tramite 
 
 ---
 
+## Circuit Breaker
+
+Il gateway implementa un **Circuit Breaker** tramite Resilience4j. Se un microservizio non è raggiungibile, il gateway risponde con un messaggio di errore controllato invece di far attendere il client:
+
+```json
+{
+  "status": "503",
+  "messaggio": "Il servizio Docenti non è al momento disponibile. Riprovare più tardi."
+}
+```
+
+---
+
 ## Connessione al DB con DBeaver
-
-Per ispezionare il database direttamente con DBeaver:
-
-1. Apri DBeaver e clicca su **"Nuova connessione"** (icona + in alto a sinistra)
-2. Seleziona **PostgreSQL** e clicca **Avanti**
-3. Inserisci i parametri:
 
 | Campo | Valore |
 |---|---|
-| Host | localhost |
-| Porta | 5433 |
-| Database | sgs |
-| Nome utente | sgs_user |
-| Password | postgres |
+| Host | `localhost` |
+| Porta | `5433` |
+| Database | `sgs` |
+| Utente | `sgs_user` |
+| Password | `postgres` |
 
-4. Clicca **"Test connessione"** per verificare
-5. Clicca **Fine**
+Le tabelle si trovano in: `sgs → Schemas → sgs_core → Tables`
 
-Una volta connesso, lo schema con tutte le tabelle si trova in:
-```
-sgs → Schemas → sgs_core → Tables
-```
-
-Le tabelle disponibili sono: `docenti`, `studenti`, `classi`, `materie`, `ruoli`, `utenti`, `utente_ruolo`, `docente_classe`, `docente_materia`, `audit`.
+Tabelle disponibili: `docenti`, `studenti`, `classi`, `materie`, `ruoli`, `utenti`, `utente_ruolo`, `docente_classe`, `docente_materia`, `audit`
 
 ---
 
 ## Comandi utili
 
 ```bash
-# Avvia tutto
-docker-compose up
+# Avvia tutto (con rebuild delle immagini)
+docker compose up --build
 
 # Avvia in background
-docker-compose up -d
+docker compose up -d
 
 # Ferma i container (i dati rimangono)
-docker-compose down
+docker compose down
 
-# Ferma e cancella anche il volume del DB (reset completo)
-docker-compose down -v
+# Reset completo (cancella anche il volume del DB)
+docker compose down -v
 
-# Vedi i log in tempo reale
-docker-compose logs -f
+# Log in tempo reale
+docker compose logs -f
 
-# Vedi i log di un solo servizio
-docker-compose logs -f docenti-service
+# Log di un singolo servizio
+docker compose logs -f gateway-service
+docker compose logs -f docenti-service
+docker compose logs -f studenti-service
 ```
 
 ---
 
-## Credenziali DB
+## Note di sicurezza
 
 > ⚠️ Le credenziali presenti in questo progetto sono solo per uso locale/didattico.
-> In un ambiente di produzione vanno gestite tramite variabili d'ambiente o secret manager.
+> In produzione vanno gestite tramite variabili d'ambiente o un secret manager.
 
 ---
 
 ## Prossimi sviluppi
+
 - [ ] Autenticazione JWT
-- [ ] API Gateway con Spring Cloud Gateway
 - [ ] Jenkins Pipeline CI/CD
+- [ ] Flyway per il versioning dello schema DB

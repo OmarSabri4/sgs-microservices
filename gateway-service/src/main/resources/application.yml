@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+
+          routes:
+
+            # ── Docenti Service ──────────────────────────────────
+            - id: docenti-service
+              uri: http://docenti-service:8081
+              predicates:
+                - Path=/api/docenti/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: docentiCB
+                    fallbackUri: forward:/fallback/docenti
+
+            # ── Studenti Service ─────────────────────────────────
+            - id: studenti-service
+              uri: http://studenti-service:8082
+              predicates:
+                - Path=/api/studenti/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: studentiCB
+                    fallbackUri: forward:/fallback/studenti
+
+            # ── Swagger docenti ──────────────────────────────────
+            - id: docenti-swagger
+              uri: http://docenti-service:8081
+              predicates:
+                - Path=/docenti/swagger-ui.html, /docenti/swagger-ui/**, /docenti/api-docs/**
+              filters:
+                - RewritePath=/docenti/(?<segment>.*), /${segment}
+
+            # ── Swagger studenti ─────────────────────────────────
+            - id: studenti-swagger
+              uri: http://studenti-service:8082
+              predicates:
+                - Path=/studenti/swagger-ui.html, /studenti/swagger-ui/**, /studenti/api-docs/**
+              filters:
+                - RewritePath=/studenti/(?<segment>.*), /${segment}
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    com.sgs.gateway: DEBUG
