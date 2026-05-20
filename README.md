@@ -190,23 +190,7 @@ Il gateway implementa un **Circuit Breaker** tramite Resilience4j. Se un microse
 }
 ```
 
----
 
-## Connessione al DB con DBeaver
-
-| Campo | Valore |
-|---|---|
-| Host | `localhost` |
-| Porta | `5433` |
-| Database | `sgs` |
-| Utente | `sgs_user` |
-| Password | `postgres` |
-
-Le tabelle si trovano in: `sgs → Schemas → sgs_core → Tables`
-
-Tabelle disponibili: `docenti`, `studenti`, `classi`, `materie`, `ruoli`, `utenti`, `utente_ruolo`, `docente_classe`, `docente_materia`, `audit`
-
----
 
 ## Comandi utili
 
